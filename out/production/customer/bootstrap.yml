@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: customer
+  config:
+    import: "optional:configserver:http://localhost:7000"
+  cloud:
+    config:
+      enabled: true
+      label: master
+      uri: http://localhost:7000
+
+logging:
+  level:
+    root: INFO
+    com.customer: DEBUG
+    org.springframework.web: INFO
+    org.springframework.web.reactive: DEBUG
+    reactor.netty.http.client: DEBUG
+    reactor.netty.http.server: INFO
+    org.springframework.cloud: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n"
+
+management:
+  security:
+    enabled: false     # 🔥 DESACTIVA BASIC AUTH EN ACTUATOR
+
+  endpoints:
+    web:
+      exposure:
+        include: "*"   # 🔥 Expone info, health y todo sin seguridad
+      base-path: /actuator
+
+  endpoint:
+    health:
+      show-details: always

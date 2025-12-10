@@ -19,6 +19,7 @@ import reactor.core.scheduler.Schedulers;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 //Service implementation
 @Service
@@ -52,12 +53,30 @@ public class CustomerServiceImpl implements CustomerService {
         );
     }
 
+//    @Override
+//    public Flux<Customer> findAll() {
+//        LOGGER.info("Consultando todos lo clientes del banco NTTBANK");
+//        Flux<Customer> customers = customerRepository.findAll();
+//        return customers;
+//    }
+
     @Override
     public Flux<Customer> findAll() {
-        LOGGER.info("Consultando todos lo clientes del banco NTTBANK");
-        Flux<Customer> customers = customerRepository.findAll();
-        return customers;
+        LOGGER.info("Consultando todos los clientes del banco NTTBANK");
+        LOGGER.info("Manejo de colecciones utilizando correctamente las APIs para Streams. ");
+
+        return customerRepository.findAll()
+                .collectList() // Convertimos el Flux en una lista para trabajar con Streams
+                .map(list ->
+                        list.stream()
+                                // Ejemplo de uso de Streams: ordenar los clientes por el DNI de manera ascendente
+                                .sorted((c1, c2) -> c1.getDni().compareTo(c2.getDni()))
+                                .collect(Collectors.toList())
+                )
+                .flatMapMany(Flux::fromIterable);
     }
+
+
 
     @Override
     public Mono<Customer> findByDni(String dni) {
