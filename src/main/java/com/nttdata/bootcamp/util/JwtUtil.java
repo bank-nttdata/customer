@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Component
 public class JwtUtil {
 
-    private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60; // 5 horas
+    private static final long JWT_TOKEN_VALIDITY = 10 * 60 * 60; // 5 horas
     private Key secretKey;
 
     @PostConstruct

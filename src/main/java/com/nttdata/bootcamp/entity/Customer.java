@@ -21,7 +21,6 @@ public class Customer {
 
     @Id
     private String id;
-
     private String dni;
     private String typeCustomer;
     private Boolean flagVip;
@@ -35,7 +34,6 @@ public class Customer {
     @JsonFormat(pattern = "yyyy-MM-dd")
     @CreatedDate
     private Date creationDate;
-
     @JsonFormat(pattern = "yyyy-MM-dd")
     @LastModifiedDate
     private Date modificationDate;

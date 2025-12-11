@@ -23,12 +23,12 @@ logging:
 
 management:
   security:
-    enabled: false     # 🔥 DESACTIVA BASIC AUTH EN ACTUATOR
+    enabled: false     # DESACTIVA BASIC AUTH EN ACTUATOR
 
   endpoints:
     web:
       exposure:
-        include: "*"   # 🔥 Expone info, health y todo sin seguridad
+        include: "*"   # Expone info, health y todo sin seguridad
       base-path: /actuator
 
   endpoint:
