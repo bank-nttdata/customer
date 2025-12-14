@@ -14,6 +14,8 @@ public class BusinessCustomerDto {
     @NotBlank
     @Pattern(regexp = "^[0-9]+$", message = "El DNI solo debe contener números")
     private String dni;
+    private String ruc;
+    private String companyName;
     private String name;
     private String surName;
     private String address;

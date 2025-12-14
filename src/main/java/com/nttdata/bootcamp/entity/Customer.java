@@ -22,6 +22,8 @@ public class Customer {
     @Id
     private String id;
     private String dni;
+    private String ruc;
+    private String companyName;
     private String typeCustomer;
     private Boolean flagVip;
     private Boolean flagPyme;

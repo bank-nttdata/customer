@@ -9,5 +9,6 @@ public interface CustomerRepository extends ReactiveCrudRepository<Customer, Str
 
     Mono<Boolean> existsByDni(String dni);
     Mono<Customer> findByDni(String dni);
+    Mono<Boolean> existsByRuc(String ruc);
 
 }

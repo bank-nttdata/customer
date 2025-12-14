@@ -32,44 +32,74 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private RedisCacheService redisCacheService;
 
+    //******************************
+    // --- SAVE BUSINESS ---
     @Override
     public Mono<Customer> save(Customer dataCustomer) {
         return Mono.defer(() ->
-                customerRepository.existsByDni(dataCustomer.getDni())
-                        .doOnSubscribe(s -> LOGGER.info("SUBSCRIBE save() DNI={}", dataCustomer.getDni()))
+                validarExistencia(dataCustomer)
                         .flatMap(exists -> {
                             if (exists) {
-                                LOGGER.info("Customer ya existe. DNI={}", dataCustomer.getDni());
-                                return Mono.error(new DuplicateCustomerIdException(dataCustomer.getDni()));
+                                return Mono.error(new DuplicateCustomerIdException(
+                                        obtenerIdentificador(dataCustomer)
+                                ));
                             }
                             return customerRepository.save(dataCustomer)
                                     .doOnSuccess(saved ->
-                                            LOGGER.info("Customer guardado. DNI={} id={}", saved.getDni(), saved.getId())
+                                            LOGGER.info("Customer guardado. type={} id={}",
+                                                    saved.getTypeCustomer(), saved.getId())
                                     );
                         })
-                        .doOnTerminate(() -> LOGGER.info("TERMINATE save() DNI={}", dataCustomer.getDni()))
-                        .doOnError(err -> LOGGER.error("ERROR save() DNI={} -> {}", dataCustomer.getDni(), err.toString()))
-                        .log("reactor.pipeline")
+                        .doOnSubscribe(s ->
+                                LOGGER.info("SUBSCRIBE save() {}", logIdentificador(dataCustomer))
+                        )
+                        .doOnTerminate(() ->
+                                LOGGER.info("TERMINATE save() {}", logIdentificador(dataCustomer))
+                        )
+                        .doOnError(err ->
+                                LOGGER.error("ERROR save() {} -> {}",
+                                        logIdentificador(dataCustomer), err.getMessage())
+                        )
         );
     }
 
-//    @Override
-//    public Flux<Customer> findAll() {
-//        LOGGER.info("Consultando todos lo clientes del banco NTTBANK");
-//        Flux<Customer> customers = customerRepository.findAll();
-//        return customers;
-//    }
+    private Mono<Boolean> validarExistencia(Customer customer) {
+        if ("PERSONAL".equalsIgnoreCase(customer.getTypeCustomer())) {
+            return customerRepository.existsByDni(customer.getDni());
+        }
+
+        if ("EMPRESARIAL".equalsIgnoreCase(customer.getTypeCustomer())) {
+            return customerRepository.existsByRuc(customer.getRuc());
+        }
+
+        return Mono.error(new IllegalArgumentException(
+                "Tipo de cliente no válido: " + customer.getTypeCustomer()
+        ));
+    }
+
+    private String obtenerIdentificador(Customer customer) {
+        return "PERSONA".equalsIgnoreCase(customer.getTypeCustomer())
+                ? customer.getDni()
+                : customer.getRuc();
+    }
+
+    private String logIdentificador(Customer customer) {
+        return "typeCustomer =" + customer.getTypeCustomer() +
+                ", identificador =" + obtenerIdentificador(customer);
+    }
+    //*************************
 
     @Override
     public Flux<Customer> findAll() {
         LOGGER.info("Consultando todos los clientes del banco NTTBANK");
         LOGGER.info("Manejo de colecciones utilizando correctamente las APIs para Streams. ");
 
+        //Map       = Transforma el contenido / No cambia el tipo de flujo / NO aplana Publishers
+        //flatMap   = Transforma y aplana / Se usa cuando retornas un Publisher (Mono o Flux)
         return customerRepository.findAll()
                 .collectList() // Convertimos el Flux en una lista para trabajar con Streams
                 .map(list ->
                         list.stream()
-                                // Ejemplo de uso de Streams: ordenar los clientes por el DNI de manera ascendente
                                 .sorted((c1, c2) -> c1.getDni().compareTo(c2.getDni()))
                                 .collect(Collectors.toList())
                 )

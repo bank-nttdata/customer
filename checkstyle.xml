@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<module name="Checker">
+    <module name="TreeWalker">
+        <!-- Reglas de estilo -->
+        <module name="Indentation">
+            <property name="tabWidth" value="4"/> <!-- Establece la indentación en 4 espacios -->
+            <property name="indentLevel" value="4"/>
+        </module>
+
+        <module name="LineLength">
+            <property name="max" value="100"/> <!-- Longitud máxima de línea: 100 caracteres -->
+        </module>
+
+        <module name="FileLength">
+            <property name="max" value="1000"/> <!-- Longitud máxima del archivo: 1000 líneas -->
+        </module>
+
+        <module name="NamingConvention">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/> <!-- Convención de nombres: solo minúsculas y letras/números -->
+        </module>
+
+        <!-- Se eliminan las reglas de Javadoc -->
+
+        <module name="TreeWalker">
+            <module name="HideUtilityClassConstructor">
+                <property name="allowNoConstructor" value="true"/> <!-- Permitir constructor en clases que no sean de utilidad -->
+            </module>
+        </module>
+
+    </module>
+</module>

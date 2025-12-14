@@ -196,21 +196,34 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.5</version>
+                <version>0.8.5</version> <!-- Utiliza la versión más reciente -->
                 <executions>
                     <execution>
-                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <goals>
                             <goal>report</goal>
+                        </goals>
+                        <phase>test</phase> <!-- Se ejecuta en la fase de prueba -->
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.1.0</version> <!-- Puedes usar la última versión disponible -->
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal> <!-- Goal para ejecutar el chequeo de estilo -->
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <configLocation>google_checks.xml</configLocation> <!-- Especifica el archivo de configuración -->
+                    <encoding>UTF-8</encoding> <!-- Codificación de los archivos -->
+                    <consoleOutput>true</consoleOutput> <!-- Salida en consola -->
+                </configuration>
             </plugin>
 
         </plugins>

@@ -148,6 +148,8 @@ public class CustomerController {
     private Customer mapFromBussines(BusinessCustomerDto dto) {
         Customer c = new Customer();
         c.setDni(dto.getDni());
+        c.setRuc(dto.getRuc());
+        c.setCompanyName(dto.getCompanyName());
         c.setTypeCustomer(Constant.BUSINESS_CUSTOMER);
         c.setFlagVip(false);
         c.setFlagPyme(false);
